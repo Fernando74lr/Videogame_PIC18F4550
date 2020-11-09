@@ -1,3 +1,4 @@
+
 #include "mcc.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -10,11 +11,14 @@ float  ADC_Value;
 unsigned char ADC_Buffer[10];
 unsigned char pos = 0x00;
 unsigned int enem1[]={0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0 };
-unsigned int enem2[]={};
+unsigned int enem2[]={0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0};
 
-void pintar(unsigned int enem1[]){
-	char posEn = 0x00;
-
+void pintar(unsigned int enem1[], int fila){
+	char posEn;
+    if (fila==1){
+        posEn = 0x00;}
+    if (fila==2){
+        posEn = 0x40;}
 	for (int i = 0; i < 39; i++){
 		if(enem1[i] == 1){
 			while(BusyXLCD());
@@ -27,15 +31,18 @@ void pintar(unsigned int enem1[]){
 	}	
 }
 
-void recorrer(unsigned int enem1[]){
-    unsigned int enemtemp[]={};
-    for (int i = 1; i < 39; i++){
+void recorrer(int enem1[]){
+    int enemtemp[40];
+    for (int i = 1; i < 40; i++){
         enemtemp[i-1] = enem1[i];
     }
     enemtemp[39] = enem1[0];
-    enem1 = enemtemp;
+    
+    for(int i=0; i<40; i++)
+        enem1[i] = enemtemp[i];
 
 }
+
 
 void main(void)
 {
@@ -102,8 +109,11 @@ void main(void)
                 pos=pos-0x40;
             }
         }
-pintar(enem1);
+pintar(enem1, 1);
+pintar(enem2, 2);
 recorrer(enem1);
+recorrer(enem2);
+
         
         while(BusyXLCD());
         SetDDRamAddr(0x05);
@@ -119,10 +129,3 @@ recorrer(enem1);
            
     }
 }
-
-
-
-
-/**
- End of File
-*/
