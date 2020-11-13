@@ -1,4 +1,3 @@
-
 #include "mcc.h"
 #include "stdio.h"
 #include "stdlib.h"
@@ -12,6 +11,10 @@ unsigned char ADC_Buffer[10];
 unsigned char pos = 0x00;
 unsigned int enem1[]={0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0 };
 unsigned int enem2[]={0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0};
+unsigned int nivel = 1;
+unsigned int niv1 = 4, niv2 = 5, niv3 = 6, niv4 = 8, niv5 = 12, niv6 = 24;
+unsigned int puntos = 0;
+
 
 void pintar(unsigned int enem1[], int fila){
 	char posEn;
@@ -99,6 +102,8 @@ void main(void)
         
         //Subimos y bajamos
         
+        
+        
         if  (ADC_Value > 512){
             if (pos < 0x40){
                 pos=pos+0x40;
@@ -120,12 +125,77 @@ recorrer(enem2);
         //
         //while(BusyXLCD());
         //putsXLCD(ADC_Buffer);
-       
-        __delay_ms(35);
+        
+        switch(nivel){
+            case 1:
+                __delay_ms(150);
+                niv1--;
+                if(niv1 == 0){
+                    nivel++;
+                puntos = puntos+15;}
+                break;
+                
+            case 2:
+                __delay_ms(125);
+                niv2--;
+                if(niv2 == 0){
+                    nivel++;
+                puntos = puntos+30;}
+                break;
+                
+            case 3:
+                __delay_ms(100);
+                niv3--;
+                if(niv3 == 0){
+                    nivel++;
+                    puntos = puntos+45;}
+                break;
+                
+            case 4:
+                __delay_ms(75);
+                niv4--;
+                if(niv4 == 0){
+                    nivel++;
+                    puntos = puntos+60;}
+                break;
+                
+            case 5:
+                __delay_ms(50);
+                niv5--;
+                if(niv5 == 0){
+                    nivel++;
+                    puntos = puntos+75;}
+                break;
+                
+            case 6:
+                __delay_ms(25);
+                niv6--;
+                if(niv6 == 0){
+                    nivel++;
+                    puntos = puntos+90;}
+                break;
+                
+            default:
+                while(BusyXLCD());
+                WriteCmdXLCD(0b00000001);
+                while(BusyXLCD());
+                SetDDRamAddr(0x05);
+                while(BusyXLCD());
+                putrsXLCD("SCORE");
+                
+                while(BusyXLCD());
+                SetDDRamAddr(0x46);
+                
+                sprintf(ADC_Buffer, "%s", puntos);
+                while(BusyXLCD());
+                putsXLCD(ADC_Buffer);
+                 __delay_ms(500);
+        }
         //clear display
         while(BusyXLCD());
         WriteCmdXLCD(0b00000001);
         
-           
+       
+        
     }
 }
