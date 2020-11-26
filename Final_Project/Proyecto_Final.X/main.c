@@ -173,7 +173,7 @@ void main(void)
 
         
         while(BusyXLCD());
-        SetDDRamAddr(0x05);
+        SetDDRamAddr(0x30);
         //
         //while(BusyXLCD());
         //putsXLCD(ADC_Buffer);
